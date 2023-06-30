@@ -1,0 +1,12 @@
+# lib folder (Not my code)
+lib/
+
+# res folder (Just takes up space)
+res/
+
+# CMake artifacts
+CMakeSettings.json
+
+# Win32 build artifacts
+.vs/
+out/

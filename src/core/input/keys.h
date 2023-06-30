@@ -1,0 +1,65 @@
+#ifndef ANJIN_INPUT_KEYS
+#define ANJIN_INPUT_KEYS
+
+struct CORE_input_keys {
+  int a;
+  int b;
+  int c;
+  int d;
+  int e;
+  int f;
+  int g;
+  int h;
+  int i;
+  int j;
+  int k;
+  int l;
+  int m;
+  int n;
+  int o;
+  int p;
+  int q;
+  int r;
+  int s;
+  int t;
+  int u;
+  int v;
+  int w;
+  int x;
+  int y;
+  int z;
+  int n0;
+  int n1;
+  int n2;
+  int n3;
+  int n4;
+  int n5;
+  int n6;
+  int n7;
+  int n8;
+  int n9;
+  int f1;
+  int f2;
+  int f3;
+  int f4;
+  int f5;
+  int f6;
+  int f7;
+  int f8;
+  int f9;
+  int f10;
+  int f11;
+  int f12;
+  int up;
+  int down;
+  int left;
+  int right;
+  int space;
+  int shift;
+  int enter;
+  int tab;
+  int escape;
+  int backspace;
+};
+
+#endif
