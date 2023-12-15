@@ -6,6 +6,7 @@
 #include "window/window.h"
 
 struct CORE_foo {
+  int    fps;              /* Frames per second */
   double td;               /* Tick delay */
   void (*init_fn)  (void); /* State init function */
   void (*quit_fn)  (void); /* State quit function */

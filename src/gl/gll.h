@@ -1,7 +1,10 @@
 #ifndef ANJIN_GLL_H
 #define ANJIN_GLL_H
 
-#ifdef _WIN32
+#ifdef __EMSCRIPTEN__
+  #include <GL/gl.h>
+  #include <GLES/gl3.h>
+#elif _WIN32
   #include <windows.h>
   #define GLDECL WINAPI
   #include <GL/gl.h>
@@ -54,12 +57,16 @@ int GL_gll(void);
   GLFN(void,            glUseProgram,              GLuint) \
   GLFN(void,            glVertexAttribPointer,     GLuint, GLint, GLenum, GLboolean, GLsizei, const GLvoid *) \
 
+#ifndef __EMSCRIPTEN__
+
 #define GLFN(ret, name, ...) \
   typedef ret GLDECL name##proc(__VA_ARGS__); \
   extern name##proc *name;
 
 GL_PROCS
 #undef GLFN
+
+#endif
 
 /* This isn't needed anymore, clean up namespace */
 #undef GLDECL

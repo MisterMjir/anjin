@@ -5,6 +5,7 @@
 #include "txt/txt.h"
 #include "gl/gl_util.h"
 #include "game.h"
+#include "snd/snd.h"
 
 #define WIN_W 640
 #define WIN_H 480
@@ -13,6 +14,8 @@
 
 /* Player stuff */
 unsigned int txt;
+unsigned int btxt;
+static int ticks;
 float x, y;
 
 /* Enemy stuff */
@@ -63,6 +66,14 @@ static void update_player(void)
   y += ((yin - SHIP_SIZE / 2) - y) / SLOWDOWN;
   if (y < 0) y = 0;
   if (y + SHIP_SIZE > WIN_H) y = WIN_H - SHIP_SIZE;
+
+  ++ticks;
+  ECS_e newe;
+
+  if (ticks % 1024 == 0) {
+    newe = ECS_e_create();
+    ECS_SET(newe, Bullet, x + 28, y + 32, 8, 32, 0, 0, 0, -.00005, btxt, 0);
+  }
 }
 
 static void e_update(struct ECS_qd *data, ECS_eint count)
@@ -115,7 +126,7 @@ static void b_update(struct ECS_qd *data, ECS_eint count)
     b[i].x += b[i].xvel;
     b[i].y += b[i].yvel;
 
-    if (b[i].y > WIN_H) {
+    if (b[i].y > WIN_H || b[i].y + b[i].h < 0) {
       ECS_e_destroy(c[i].e);
     }
 
@@ -123,7 +134,35 @@ static void b_update(struct ECS_qd *data, ECS_eint count)
     if (b[i].type) {
       if (b[i].x < x + SHIP_SIZE && b[i].x + b[i].w > x &&
           b[i].y < y + SHIP_SIZE && b[i].y + b[i].h > y) {
-        CORE_switch_state(title_init);
+        CORE_switch_state(lose_init);
+      }
+    }
+    /* Player bullets */
+    else {
+      /* Need a better way to 'query' within a query */
+      struct ECS_qi *cur;
+      struct ECS_qd  qd;
+
+      if (qe_update.tables.table == NULL) return;
+
+      cur = &qe_update.tables;
+      while (cur) {
+        qd.table = cur->table;
+
+        struct Enemy *e;
+        e = ECS_ITER(&qd, Enemy);
+
+        for (ECS_eint j = cur->table->count - 1; j > 0; --j) {
+          if (b[i].x < e[j].x + SHIP_SIZE && b[i].x + b[i].w > e[j].x &&
+              b[i].y < e[j].y + SHIP_SIZE && b[i].y + b[i].h > e[j].y) {
+            ECS_e_destroy(c[i].e);
+            if (!--e[j].hp) {
+              CORE_switch_state(win_init);
+            }
+          }
+        }
+
+        cur = cur->next;
       }
     }
   }
@@ -185,6 +224,7 @@ void level_draw(void)
 void level_quit(void)
 {
   GL_texture_destroy(txt);
+  GL_texture_destroy(btxt);
   GL_texture_destroy(enemy_txt[0]);
   GL_texture_destroy(enemy_btxt[0]);
 
@@ -204,11 +244,15 @@ void level_init(void)
 
   /* GFX stuff */
   txt = GL_texture_create("res/img/cat.png");
+  btxt = GL_texture_create("res/img/cat_bullet1.png");
   enemy_txt[0] = GL_texture_create("res/img/monkey_1.png");
   enemy_btxt[0] = GL_texture_create("res/img/banana.png");
 
   GFX_projection(0, WIN_W, WIN_H, 0, -1, 1);
   TXT_projection(0, WIN_W, WIN_H, 0, -1, 1);
+
+  SND_bgm_set("res/music/boss_theme.wav");
+  SND_bgm_play();
 
   /* ECS init */
   if (ECS_init(&ctx)) return;
@@ -234,5 +278,5 @@ void level_init(void)
 
   /* Test enemy */
   e = ECS_e_create();
-  ECS_SET(e, Enemy, 0, 0, 1, 0, 0, 1);
+  ECS_SET(e, Enemy, 0, 0, 1, 0, 0, 5);
 }

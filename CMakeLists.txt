@@ -9,6 +9,8 @@ set(GAME
   ${CMAKE_CURRENT_LIST_DIR}/src/game/demo4.c
   ${CMAKE_CURRENT_LIST_DIR}/src/game/level.c
   ${CMAKE_CURRENT_LIST_DIR}/src/game/title.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/game/lose.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/game/win.c
 )
 
 set(MODULE_CORE

@@ -4,6 +4,9 @@
 #include "gl/gl_util.h"
 #include "gfx/gfx.h"
 #include "txt/txt.h"
+#ifdef __EMSCRIPTEN__
+  #include <emscripten/emscripten.h>
+#endif
 
 struct CORE_foo     CORE_foo;
 struct CORE_window *CORE_wnd;
@@ -91,6 +94,30 @@ void CORE_quit(void)
  *
  * @param data Dummy parameter, needed for threads
  */
+int CORE_game_tick(void)
+{
+  CORE_input_update();
+  if (CORE_input.quit) return 0;
+
+  if (CORE_foo.resize) {
+    glViewport(0, 0, CORE_foo.win_w, CORE_foo.win_h);
+    CORE_foo.resize = 0;
+  }
+
+  if (CORE_foo.init) {
+    CORE_foo.quit_fn();
+    CORE_foo.init_fn();
+    CORE_foo.init = 0;
+  }
+  
+  CORE_foo.update_fn();
+
+  CORE_foo.draw_fn();
+  CORE_window_swap_buffers(CORE_wnd);
+
+  return 1;
+}
+
 void CORE_game_loop(void *data)
 {
   clock_t ts, te; /* Tick start, tick end */
@@ -98,49 +125,38 @@ void CORE_game_loop(void *data)
 
   init();
 
-  while (1) {
-    ts = clock();
+  #ifdef __EMSCRIPTEN__
+    emscripten_set_main_loop(CORE_game_tick, CORE_foo.fps, EM_TRUE);
+  #else
+    while (1) {
+      ts = clock();
 
-    CORE_input_update();
-    if (CORE_input.quit) break;
+      if (!CORE_game_tick()) break;
 
-    if (CORE_foo.resize) {
-      glViewport(0, 0, CORE_foo.win_w, CORE_foo.win_h);
-      CORE_foo.resize = 0;
+      te = clock();
+
+      tt = (te - ts) / (double) CLOCKS_PER_SEC / 1000;
+      if (tt > CORE_foo.td) {
+        CORE_sleep(CORE_foo.td - tt);
+      }
     }
-
-    if (CORE_foo.init) {
-      CORE_foo.quit_fn();
-      CORE_foo.init_fn();
-      CORE_foo.init = 0;
-    }
-    
-    CORE_foo.update_fn();
-
-    CORE_foo.draw_fn();
-    CORE_window_swap_buffers(CORE_wnd);
-
-    te = clock();
-
-    tt = (te - ts) / (double) CLOCKS_PER_SEC / 1000;
-    if (tt > CORE_foo.td) {
-      CORE_sleep(CORE_foo.td - tt);
-    }
-  }
+  #endif
 
   quit();
 }
 
 void CORE_set_fps(unsigned int fps)
 {
+  CORE_foo.fps = fps;
   CORE_foo.td = 1000.0 / fps;
 }
 
 /**
  * CORE_switch_state
  *
- * TODO: Explain the sentence below better
- * Comment the first line to use the most recent state
+ * Comment the first line to use the latest state
+ * With no comment, if there are multiples calls to this
+ * function, it will use the first instance of the call
  */
 void CORE_switch_state(void (*init_fn)(void))
 {

@@ -18,7 +18,7 @@ void demo1_update(void)
     SND_bgm_play();
   }
   if (CORE_input.keys.n2 == 1) {
-    SND_bgm_set("res/music/lose.wav");
+    SND_bgm_set("res/music/sad_song.wav");
     SND_bgm_play();
   }
 
