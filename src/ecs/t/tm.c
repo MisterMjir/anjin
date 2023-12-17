@@ -1,6 +1,8 @@
 #include "tm.h"
 #include "../c/c.h"
 #include <stdlib.h>
+#include <string.h>
+#include "log/log.h"
 
 #define INITIAL_COUNT 8
 #define GROWTH_RATE   1.618
@@ -84,7 +86,7 @@ int ECS_tm_alloc(struct ECS_tm *tm, unsigned long count)
 struct ECS_t * ECS_tm_add(struct ECS_tm *tm, ECS_type t)
 {
   if (tm->alloc <= tm->count) {
-    if (cm_alloc(tm, (unsigned long) (tm->count * GROWTH_RATE))) {
+    if (ECS_tm_alloc(tm, (unsigned long) (tm->count * GROWTH_RATE))) {
       LOG_msg("Out of memory\n");
       return NULL;
     }

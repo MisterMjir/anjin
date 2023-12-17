@@ -21,9 +21,9 @@ static int init(void)
   if (SND_init()) return -1;
 
   GL_set(CORE_wnd); /* Context must be set in the thread its used in */
+
   GFX_init();
   TXT_init();
-  glEnable(GL_CULL_FACE);
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
@@ -54,7 +54,7 @@ static void window_resize(int w, int h)
  * 
  * @param fps Max FPS
  */
-#define INIT_FN(fn) if (res = fn) return res;
+#define INIT_FN(fn) if ((res = fn)) return res;
 int CORE_init(int w, int h, unsigned int fps, void (*init_fn)(void))
 {
   int res;
@@ -94,10 +94,9 @@ void CORE_quit(void)
  *
  * @param data Dummy parameter, needed for threads
  */
-int CORE_game_tick(void)
+void CORE_game_tick(void)
 {
   CORE_input_update();
-  if (CORE_input.quit) return 0;
 
   if (CORE_foo.resize) {
     glViewport(0, 0, CORE_foo.win_w, CORE_foo.win_h);
@@ -114,11 +113,9 @@ int CORE_game_tick(void)
 
   CORE_foo.draw_fn();
   CORE_window_swap_buffers(CORE_wnd);
-
-  return 1;
 }
 
-void CORE_game_loop(void *data)
+THREAD_FN CORE_game_loop(void *data)
 {
   clock_t ts, te; /* Tick start, tick end */
   double  tt;     /* Tick time */
@@ -131,7 +128,8 @@ void CORE_game_loop(void *data)
     while (1) {
       ts = clock();
 
-      if (!CORE_game_tick()) break;
+      CORE_game_tick();
+      if (CORE_input.quit) break;
 
       te = clock();
 
@@ -143,6 +141,8 @@ void CORE_game_loop(void *data)
   #endif
 
   quit();
+
+  THREAD_RETURN;
 }
 
 void CORE_set_fps(unsigned int fps)

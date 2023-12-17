@@ -1,5 +1,4 @@
 #include "input.h"
-#include <windows.h>
 
 struct CORE_input CORE_input;         /* Input for a tick */
 static struct CORE_input CORE_inputv; /* Volatile core input */
@@ -82,6 +81,8 @@ void CORE_input_update(void)
 
 #ifdef _WIN32
   #include "input_win32.c"
+#elif __EMSCRIPTEN__
+  #include "input_em.c"
 #else
   #error Platform not supported (CORE::input)
 #endif

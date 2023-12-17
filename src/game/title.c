@@ -34,6 +34,8 @@ void title_init(void)
   CORE_foo.draw_fn = title_draw;
   CORE_foo.quit_fn = title_quit;
 
+  CORE_window_title(CORE_wnd, "Space Catet");
+
   txt = GL_texture_create("res/img/title.png");
 
   GFX_projection(0, 640, 480, 0, -1, 1);

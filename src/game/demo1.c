@@ -1,6 +1,5 @@
 #include "core/core.h"
 #include "snd/snd.h"
-#include <stdio.h>
 #include "gl/gl_util.h"
 
 static unsigned int shader;
@@ -33,8 +32,9 @@ void demo1_update(void)
 
 void demo1_draw(void)
 {
-  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClearColor(0.1f, 0.6f, 0.6f, 1.0f);
+  //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  glClear(GL_COLOR_BUFFER_BIT);
 
   glUseProgram(shader);
   glBindVertexArray(VAO);
@@ -43,6 +43,7 @@ void demo1_draw(void)
 
 void demo1_quit(void)
 {
+  glDeleteVertexArrays(1, &VAO);
   GL_shader_destroy(shader);
 }
 
@@ -76,8 +77,4 @@ void demo1_init(void)
 
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
   glEnableVertexAttribArray(0);
-
-  glBindBuffer(GL_ARRAY_BUFFER, 0); 
-
-  glBindVertexArray(0); 
 }

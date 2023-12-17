@@ -2,6 +2,7 @@
 #include "log/log.h"
 #include "../ecs.h"
 #include <stdlib.h>
+#include <string.h>
 
 #define INITIAL_COUNT 8
 #define GROWTH_RATE   1.618

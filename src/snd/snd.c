@@ -126,7 +126,7 @@ static int update_buffers(void)
  * 
  * @param data Dummy parameter needed for thread functions
  */
-void SND_loop(void *data)
+THREAD_FN SND_loop(void *data)
 {
   on = 1;
   while (on) {
@@ -134,6 +134,8 @@ void SND_loop(void *data)
       update_buffers();
     }
   }
+
+  THREAD_RETURN;
 }
 
 /**

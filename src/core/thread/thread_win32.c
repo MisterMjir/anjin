@@ -14,7 +14,7 @@ struct CORE_thread {
  * @param fn The thread function
  * @return   A pointer to a CORE_thread struct
  */
-struct CORE_thread * CORE_thread_create(void (*fn)(void *))
+struct CORE_thread * CORE_thread_create(THREAD_FN (*fn)(void *))
 {
   struct CORE_thread *t;
 

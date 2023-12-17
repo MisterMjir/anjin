@@ -4,9 +4,20 @@ lib/
 # res folder (Just takes up space)
 res/
 
+# build folders
+bin/
+html/
+
 # CMake artifacts
 CMakeSettings.json
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
 
 # Win32 build artifacts
 .vs/
 out/
+
+# Linux build artifacts
+Makefile

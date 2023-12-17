@@ -2,6 +2,7 @@
 #include "gll.h"
 #include <stdio.h>
 #include "log/log.h"
+#include <stdlib.h>
 
 #define LOG_BUFFER 512
 

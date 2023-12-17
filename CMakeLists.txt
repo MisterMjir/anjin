@@ -71,19 +71,38 @@ target_link_directories(anjin PUBLIC
   ${CMAKE_CURRENT_LIST_DIR}/lib
 )
 
-target_include_directories(anjin PUBLIC
-  ${CMAKE_CURRENT_LIST_DIR}/src
-  ${CMAKE_CURRENT_LIST_DIR}/lib
-)
 
-target_link_libraries(anjin PUBLIC
-  opengl32 openal freetype
+set_target_properties(anjin PROPERTIES
+  RUNTIME_OUTPUT_DIRECTORY bin
 )
 
 if (MSVC)
   set(CMAKE_C_FLAGS "/D _CRT_SECURE_NO_WARNINGS")
+  set(LIBS "opengl32.lib openal.lib freetype.lib")
 endif ()
 
-set_target_properties(anjin PROPERTIES
-  RUNTIME_OUTPUT_DIRECTORY bin
+if (EMSCRIPTEN)
+  set_target_properties(anjin PROPERTIES
+    RUNTIME_OUTPUT_DIRECTORY html
+  )
+  set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} \
+    -s OFFSCREEN_FRAMEBUFFER=1 \
+    -s USE_WEBGL2=1 \
+    -s FULL_ES3=1 \
+    --preload-file res \
+    -pthread \
+    -s PTHREAD_POOL_SIZE=2 \
+    --profiling --profiling-funcs \
+    ")
+    set(LIBS "-GL -lopenal -lfreetype -lpthread -lm")
+endif ()
+
+
+target_link_libraries(anjin PUBLIC
+  ${LIBS}
+)
+
+target_include_directories(anjin PUBLIC
+  ${CMAKE_CURRENT_LIST_DIR}/src
+  ${CMAKE_CURRENT_LIST_DIR}/lib
 )

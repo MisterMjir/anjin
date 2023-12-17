@@ -3,6 +3,7 @@
 #include "log/log.h"
 #include "gfx/gfx.h"
 #include "gl/gl_util.h"
+#include <stdlib.h>
 
 #define WIN_W 800.0
 #define WIN_H 600.0

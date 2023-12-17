@@ -1,6 +1,8 @@
 #include "texture.h"
 #include <lodepng/lodepng.h>
 #include "gl_util.h"
+#include "log/log.h"
+#include <stdlib.h>
 
 unsigned int GL_texture_create(const char *fpath)
 {

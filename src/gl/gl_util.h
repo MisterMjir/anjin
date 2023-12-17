@@ -4,6 +4,7 @@
 #include "gll.h"
 #include "shader.h"
 #include "texture.h"
+#include "core/window/window.h"
 
 int  GL_init       (void);
 int  GL_window_init(struct CORE_window *w);

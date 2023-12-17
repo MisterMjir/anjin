@@ -53,7 +53,7 @@ static struct ECS_q qe_draw;
 static struct ECS_q qb_update;
 static struct ECS_q qb_draw;
 
-#define SLOWDOWN 256.0
+#define SLOWDOWN 16.0
 static void update_player(void)
 {
   int xin, yin; /* Need to match actual input with 'projected input' */
@@ -70,9 +70,9 @@ static void update_player(void)
   ++ticks;
   ECS_e newe;
 
-  if (ticks % 1024 == 0) {
+  if (ticks % 64 == 0) {
     newe = ECS_e_create();
-    ECS_SET(newe, Bullet, x + 28, y + 32, 8, 32, 0, 0, 0, -.00005, btxt, 0);
+    ECS_SET(newe, Bullet, x + 28, y + 32, 8, 32, 0, 0, 0, -.05, btxt, 0);
   }
 }
 
@@ -90,19 +90,19 @@ static void e_update(struct ECS_qd *data, ECS_eint count)
     case 1:
       switch (e[i].state) {
         case 0:
-          if (e[i].ticks % 4096 == 0) {
+          if (e[i].ticks % 256 == 0) {
             newe = ECS_e_create();
-            ECS_SET(newe, Bullet, e[i].x + 16, e[i].y + 32, 32, 64, 0, 0, 0, .00001, enemy_btxt[0], 1);
+            ECS_SET(newe, Bullet, e[i].x + 16, e[i].y + 32, 32, 64, 0, 0, 0, .01, enemy_btxt[0], 1);
           }
-          e[i].x += .05;
+          e[i].x += .5;
           if (e[i].x + 64 > WIN_W) e[i].state = 1;
           break;
         case 1:
-          if (e[i].ticks % 4096 == 0) {
+          if (e[i].ticks % 256 == 0) {
             newe = ECS_e_create();
             ECS_SET(newe, Bullet, e[i].x + 16, e[i].y + 32, 32, 64, 0, 0, 0, .00001, enemy_btxt[0], 1);
           }
-          e[i].x -= .05;
+          e[i].x -= .5;
           if (e[i].x < 0) e[i].state = 0;
           break;
       }

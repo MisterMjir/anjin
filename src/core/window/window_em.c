@@ -9,6 +9,7 @@ struct CORE_window {
 int CORE_window_init(void)
 {
   // Nothing needs to be done
+  return 0;
 }
 
 struct CORE_window * CORE_window_create(int w, int h)
@@ -27,12 +28,14 @@ struct CORE_window * CORE_window_create(int w, int h)
     return NULL;
   }
 
-  emscripten_get_canvas_element_size("#ANJIN_WINDOW", w, h);
+  emscripten_set_canvas_element_size("#ANJIN_WINDOW", w, h);
+
+  return win;
 }
 
 void CORE_window_destroy(struct CORE_window *w)
 {
-  free(window);
+  free(w);
 }
 
 void CORE_window_swap_buffers(struct CORE_window *w)

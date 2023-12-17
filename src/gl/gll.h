@@ -3,7 +3,7 @@
 
 #ifdef __EMSCRIPTEN__
   #include <GL/gl.h>
-  #include <GLES/gl3.h>
+  #include <GLES3/gl3.h>
 #elif _WIN32
   #include <windows.h>
   #define GLDECL WINAPI

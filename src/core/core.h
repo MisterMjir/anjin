@@ -21,10 +21,10 @@ struct CORE_foo {
 extern struct CORE_foo     CORE_foo;
 extern struct CORE_window *CORE_wnd;
 
-int  CORE_init        (int w, int h, unsigned int fps, void (*init_fn)(void));
-void CORE_quit        (void);
-void CORE_game_loop   (void *);
-void CORE_set_fps     (unsigned int);
-void CORE_switch_state(void (*init_fn)(void));
+int       CORE_init        (int w, int h, unsigned int fps, void (*init_fn)(void));
+void      CORE_quit        (void);
+THREAD_FN CORE_game_loop   (void *);
+void      CORE_set_fps     (unsigned int);
+void      CORE_switch_state(void (*init_fn)(void));
 
 #endif
