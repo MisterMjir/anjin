@@ -5,6 +5,30 @@
 #include <cglm/cglm.h>
 #include "gl/gl_util.h"
 
+static const char *vshdr =
+  "#version 300 es\n"
+  "precision mediump float;"
+  "layout (location = 0) in vec4 vertex;" // <vec2 pos, vec2 tex>
+  "uniform mat4 projection;"
+  "out vec2 TexCoords;"
+  "void main()"
+  "{"
+    "gl_Position = projection * vec4(vertex.xy, 0.0, 1.0);"
+    "TexCoords = vertex.zw;"
+  "}";
+
+static const char *fshdr =
+  "#version 300 es\n"
+  "precision mediump float;"
+  "in vec2 TexCoords;"
+  "uniform sampler2D text;"
+  "uniform vec3 textColor;"
+  "out vec4 color;"
+  "void main()"
+  "{"    
+    "vec4 sampled = vec4(1.0, 1.0, 1.0, texture(text, TexCoords).r);"
+    "color = vec4(textColor, 1.0) * sampled;"
+  "}";
 
 static FT_Library ft;
 static FT_Face face;
@@ -29,13 +53,13 @@ int TXT_init(void)
     return -1;
   }
 
-  if (FT_New_Face(ft, "res/fonts/Playfair_Display/static/PlayfairDisplay-Regular.ttf", 0, &face)) {
+  if (FT_New_Face(ft, "res/core/Outfit.ttf", 0, &face)) {
     LOG_msg("Failed to load font\n");
     return -1;
   }
-  FT_Set_Pixel_Sizes(face, 0, 48);
+  FT_Set_Pixel_Sizes(face, 0, 24);
 
-  shader = GL_shader_create("res/shaders/txtvs.glsl", "res/shaders/txtfs.glsl");
+  shader = GL_shader_create_str(vshdr, fshdr);
   glUseProgram(shader);
 
   glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -52,11 +76,11 @@ int TXT_init(void)
     glTexImage2D(
       GL_TEXTURE_2D,
       0,
-      GL_ALPHA,
+      GL_RED,
       face->glyph->bitmap.width,
       face->glyph->bitmap.rows,
       0,
-      GL_ALPHA,
+      GL_RED,
       GL_UNSIGNED_BYTE,
       face->glyph->bitmap.buffer
     );
@@ -96,6 +120,13 @@ void TXT_quit(void)
   FT_Done_FreeType(ft);
 }
 
+/**
+ * TXT_draw
+ *
+ * Current setup for +y going down, should add something to
+ * accomodate +y going up but not implemented. Also I think
+ * the y coordinate is the baseline, not the top left
+ */
 void TXT_draw(const char *str, float x, float y, float scale)
 {
   glUseProgram(shader);
@@ -107,17 +138,19 @@ void TXT_draw(const char *str, float x, float y, float scale)
     struct character c = characters[*str];
 
     float xpos = x + c.bearing[0] * scale;
-    float ypos = y - (c.size[1] - c.bearing[1]) * scale;
+    //float ypos = y - (c.size[1] - c.bearing[1]) * scale;
+    float ypos = y - c.bearing[1] * scale;
     float w = c.size[0] * scale;
     float h = c.size[1] * scale;
 
+    // If text is upside down flip ypos + h and ypos + 0
     float vertices[6][4] = {
-      {xpos,     ypos + h, 0.0f, 0.0f},
-      {xpos,     ypos,     0.0f, 1.0f},
-      {xpos + w, ypos,     1.0f, 1.0f},
-      {xpos,     ypos + h, 0.0f, 0.0f},
-      {xpos + w, ypos,     1.0f, 1.0f},
-      {xpos + w, ypos + h, 1.0f, 0.0f}
+      {xpos,     ypos, 0.0f, 0.0f},
+      {xpos,     ypos + h,     0.0f, 1.0f},
+      {xpos + w, ypos + h,     1.0f, 1.0f},
+      {xpos,     ypos, 0.0f, 0.0f},
+      {xpos + w, ypos + h,     1.0f, 1.0f},
+      {xpos + w, ypos, 1.0f, 0.0f}
     };
 
     glBindTexture(GL_TEXTURE_2D, c.txt);
@@ -129,8 +162,6 @@ void TXT_draw(const char *str, float x, float y, float scale)
 
     ++str;
   }
-  glBindVertexArray(0);
-  glBindTexture(GL_TEXTURE_2D, 0);
 }
 
 void TXT_projection(float l, float r, float b, float t, float back, float front)

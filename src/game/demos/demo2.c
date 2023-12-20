@@ -3,6 +3,7 @@
 #include "gfx/gfx.h"
 #include <stdint.h>
 #include "core/core.h"
+#include "game/demos/demos.h"
 
 static unsigned int texture;
 static uint16_t r, g, b;
@@ -10,6 +11,14 @@ static int dirr, dirg, dirb;
 
 void demo2_update(void)
 {
+  if (CORE_input.keys.right == 1) {
+    CORE_switch_state(demo3_init);
+  }
+
+  if (CORE_input.keys.left == 1) {
+    CORE_switch_state(demo1_init);
+  }
+
   if (dirr) {if (!++r) dirr = 0;}
   else      {if (!--r) dirr = 1;}
 
@@ -39,7 +48,7 @@ void demo2_init(void)
   CORE_foo.draw_fn = demo2_draw;
   CORE_foo.quit_fn = demo2_quit;
 
-  texture = GL_texture_create("res/img/test_image.png");
+  texture = GL_texture_create("res/demos/test_image.png");
   GFX_projection(0, 640, 480, 0, -1, 1);
 
   r = 0;

@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <title>anjin webapp</title>
+  <script src="coi-serviceworker.min.js"></script>
+  <!--<script src="https://greggman.github.io/webgl-lint/webgl-lint.js" crossorigin></script>-->
+  <style>
+    @font-face {
+      font-family: "Outfit";
+      src: url("Outfit.ttf");
+    }
+
+    body {
+      padding: 0;
+      margin: 0;
+      font-family: 'Outfit', sans-serif;
+      color: #2f2f40;
+
+      min-width: 100vw;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .startup {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .startbutton {
+      background-color: #2f2f40;
+      border: none;
+      color: white;
+      padding: 16px 32px;
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      box-shadow: 0 3px 9px rgba(0,0,0,.3);
+      position: relative;
+      bottom: 0;
+      transition: 0.3s;
+      border-radius: 0;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    .startbutton:hover {
+      bottom: 4px;
+      cursor: pointer;
+      box-shadow: 0 9px 27px rgba(0,0,0,.3);
+      border-radius: 8px;
+    }
+  </style>
+</head>
+<body>
+  <button onclick="wasm_time()" class="startbutton">Click to launch</button>
+  <p class="starttext">Powered by <b>anjin</b></p>
+  
+  <script type="text/javascript">
+    function wasm_time() {
+      //console.log("I wasm'ed");
+      document.body.innerHTML = "";
+      
+      let scriptEle = document.createElement("script");
+      scriptEle.setAttribute("src", "anjin.js");
+      scriptEle.setAttribute("type", "text/javascript");
+      document.body.appendChild(scriptEle);
+    }
+  </script>
+</body>
+</html>

@@ -1,23 +1,32 @@
 #include "core/core.h"
 #include "snd/snd.h"
 #include "gl/gl_util.h"
+#include "game/demos/demos.h"
 
 static unsigned int shader;
 static unsigned int VAO;
 
 void demo1_update(void)
 {
+  if (CORE_input.keys.right == 1) {
+    CORE_switch_state(demo2_init);
+  }
+
+  if (CORE_input.keys.left == 1) {
+    CORE_switch_state(demo4_init);
+  }
+
   if (CORE_input.keys.space == 1) {
     if (SND_bgm_state()) SND_bgm_pause();
     else                 SND_bgm_play();
   }
 
   if (CORE_input.keys.n1 == 1) {
-    SND_bgm_set("res/music/letter.wav");
+    SND_bgm_set("res/demos/letter.wav");
     SND_bgm_play();
   }
   if (CORE_input.keys.n2 == 1) {
-    SND_bgm_set("res/music/sad_song.wav");
+    SND_bgm_set("res/demos/sad_song.wav");
     SND_bgm_play();
   }
 
@@ -53,12 +62,12 @@ void demo1_init(void)
   CORE_foo.draw_fn = demo1_draw;
   CORE_foo.quit_fn = demo1_quit;
 
-  SND_bgm_set("res/music/lose.wav");
+  SND_bgm_set("res/demos/sad_song.wav");
   SND_bgm_play();
 
-  CORE_window_icon(CORE_wnd, "res/favicon.ico");
+  CORE_window_icon(CORE_wnd, "res/demos/favicon.ico");
 
-  shader = GL_shader_create("res/shaders/htvs.glsl", "res/shaders/htfs.glsl");
+  shader = GL_shader_create("res/demos/htvs.glsl", "res/demos/htfs.glsl");
   glUseProgram(shader);
 
   float vertices[] = {

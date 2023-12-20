@@ -2,6 +2,32 @@
 #include "gl/gl_util.h"
 #include <cglm/cglm.h>
 
+static const char *vshdr =
+	"#version 300 es\n"
+  "precision mediump float;"
+  "layout (location = 0) in vec3 aPos;"
+  "layout (location = 1) in vec2 aTexCoord;"
+  "uniform mat4 projection;"
+  "uniform vec2 scale;"
+  "uniform vec2 shift;"
+  "out vec2 TexCoord;"
+  "void main()"
+  "{"
+	  "gl_Position = projection * vec4(shift.x + aPos.x * scale.x, shift.y + aPos.y * scale.y, aPos.z, 1.0);"
+	  "TexCoord = vec2(aTexCoord.x, aTexCoord.y);"
+  "}";
+
+static const char *fshdr =
+  "#version 300 es\n"
+  "precision mediump float;"
+  "in vec2 TexCoord;"
+  "uniform sampler2D texture1;"
+  "out vec4 FragColor;"
+  "void main()"
+  "{"
+	  "FragColor = texture(texture1, TexCoord);"
+  "}";
+
 static float vertices[] = {
    1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
    1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
@@ -20,7 +46,7 @@ static unsigned int shader;
 
 int GFX_init(void)
 {
-  shader = GL_shader_create("res/shaders/imgvs.glsl", "res/shaders/imgfs.glsl");
+  shader = GL_shader_create_str(vshdr, fshdr);
 
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);

@@ -4,6 +4,7 @@
 #include "gfx/gfx.h"
 #include "gl/gl_util.h"
 #include <stdlib.h>
+#include "game/demos/demos.h"
 
 #define WIN_W 800.0
 #define WIN_H 600.0
@@ -88,15 +89,21 @@ static void phys(struct ECS_qd* data, ECS_eint count)
 
 void demo4_update(void)
 {
-  glClearColor(0.0, 0.0, 0.0, 1.0);
-  glClear(GL_COLOR_BUFFER_BIT);
+  if (CORE_input.keys.right == 1) {
+    CORE_switch_state(demo1_init);
+  }
+
+  if (CORE_input.keys.left == 1) {
+    CORE_switch_state(demo3_init);
+  }
 
   ECS_iterate(&q_phys, phys);
 }
 
 void demo4_draw(void)
 {
-  
+  glClearColor(0.0, 0.0, 0.0, 1.0);
+  glClear(GL_COLOR_BUFFER_BIT);
 
   ECS_iterate(&q_draw, draw);
 }
@@ -115,7 +122,7 @@ void demo4_init(void)
   CORE_foo.draw_fn = demo4_draw;
   CORE_foo.quit_fn = demo4_quit;
 
-  texture = GL_texture_create("res/img/test_image.png");
+  texture = GL_texture_create("res/demos/test_image.png");
 
   GFX_projection(0, 640, 480, 0, -1, 1);
 

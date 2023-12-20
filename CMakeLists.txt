@@ -2,15 +2,18 @@ cmake_minimum_required(VERSION 3.10)
 
 project(anjin)
 
-set(GAME
-  ${CMAKE_CURRENT_LIST_DIR}/src/game/demo1.c
-  ${CMAKE_CURRENT_LIST_DIR}/src/game/demo2.c
-  ${CMAKE_CURRENT_LIST_DIR}/src/game/demo3.c
-  ${CMAKE_CURRENT_LIST_DIR}/src/game/demo4.c
-  ${CMAKE_CURRENT_LIST_DIR}/src/game/level.c
-  ${CMAKE_CURRENT_LIST_DIR}/src/game/title.c
-  ${CMAKE_CURRENT_LIST_DIR}/src/game/lose.c
-  ${CMAKE_CURRENT_LIST_DIR}/src/game/win.c
+set(DEMOS
+  ${CMAKE_CURRENT_LIST_DIR}/src/game/demos/demo1.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/game/demos/demo2.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/game/demos/demo3.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/game/demos/demo4.c
+)
+
+set(SPACE_CATET
+  ${CMAKE_CURRENT_LIST_DIR}/src/game/space_catet/level.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/game/space_catet/title.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/game/space_catet/lose.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/game/space_catet/win.c
 )
 
 set(MODULE_CORE
@@ -53,6 +56,9 @@ set(MODULE_TXT
 )
 
 add_executable(anjin
+  ${DEMOS}
+  ${SPACE_CATET}
+
   ${CMAKE_CURRENT_LIST_DIR}/src/driver.c
   ${MODULE_CORE}
   ${MODULE_ECS}
@@ -63,8 +69,6 @@ add_executable(anjin
   ${CMAKE_CURRENT_LIST_DIR}/src/log/log.c
   
   ${CMAKE_CURRENT_LIST_DIR}/lib/lodepng/lodepng.c
-
-  ${GAME}
 )
 
 target_link_directories(anjin PUBLIC

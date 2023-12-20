@@ -73,6 +73,8 @@ int CORE_init(int w, int h, unsigned int fps, void (*init_fn)(void))
 
   CORE_wnd = CORE_window_create(w, h);
   CORE_window_cb_size = window_resize;
+  CORE_window_icon(CORE_wnd, "res/core/favicon.ico");
+  CORE_window_title(CORE_wnd, "anjin app");
 
   return res;
 }
@@ -133,8 +135,8 @@ THREAD_FN CORE_game_loop(void *data)
 
       te = clock();
 
-      tt = (te - ts) / (double) CLOCKS_PER_SEC / 1000;
-      if (tt > CORE_foo.td) {
+      tt = (te - ts) / (double) CLOCKS_PER_SEC * 1000;
+      if (tt < CORE_foo.td) {
         CORE_sleep(CORE_foo.td - tt);
       }
     }

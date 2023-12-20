@@ -4,7 +4,7 @@
 #include "gfx/gfx.h"
 #include "txt/txt.h"
 #include "gl/gl_util.h"
-#include "game.h"
+#include "space_catet.h"
 #include "snd/snd.h"
 
 #define WIN_W 640
@@ -243,15 +243,15 @@ void level_init(void)
   CORE_foo.quit_fn = level_quit;
 
   /* GFX stuff */
-  txt = GL_texture_create("res/img/cat.png");
-  btxt = GL_texture_create("res/img/cat_bullet1.png");
-  enemy_txt[0] = GL_texture_create("res/img/monkey_1.png");
-  enemy_btxt[0] = GL_texture_create("res/img/banana.png");
+  txt = GL_texture_create("res/space_catet/cat.png");
+  btxt = GL_texture_create("res/space_catet/cat_bullet1.png");
+  enemy_txt[0] = GL_texture_create("res/space_catet/monkey_1.png");
+  enemy_btxt[0] = GL_texture_create("res/space_catet/banana.png");
 
   GFX_projection(0, WIN_W, WIN_H, 0, -1, 1);
   TXT_projection(0, WIN_W, WIN_H, 0, -1, 1);
 
-  SND_bgm_set("res/music/boss_theme.wav");
+  SND_bgm_set("res/space_catet/boss_theme.wav");
   SND_bgm_play();
 
   /* ECS init */

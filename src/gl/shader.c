@@ -6,51 +6,46 @@
 
 #define LOG_BUFFER 512
 
-static int fts(const char *fpath, char **str)
+static char * fts(const char *fpath)
 {
   FILE  *file;
   size_t size;
+  char  *str;
   
   if (!(file = fopen(fpath, "r"))) {
     LOG_msg("Could not open file: %s\n", fpath);
-    return -1;
+    return NULL;
   }
 
   size = 1; /* Account for '\0' */
   while (fgetc(file) != EOF) {
     ++size;
   }
-  if (!(*str = malloc(size))) {
+  if (!(str = malloc(size))) {
     LOG_msg("Out of memory\n");
-    return -1;
+    return NULL;
   }
   if (fseek(file, 0, SEEK_SET)) {
     LOG_msg("Could not seek in file\n");
-    return -1;
+    return NULL;
   }
 
-  if (fread(*str, sizeof(char), size - 1, file) != size - 1) {
+  if (fread(str, sizeof(char), size - 1, file) != size - 1) {
     LOG_msg("Could not read file\n");
-    return -1;
+    return NULL;
   }
-  (*str)[size - 1] = '\0';
+  str[size - 1] = '\0';
 
   fclose(file);
 
-  return 0;
+  return str;
 }
 
-static unsigned int compile_shader(const char *fpath, GLenum type)
+static unsigned int compile_shader(const char *str, GLenum type)
 {
-  char        *str;
   unsigned int s;
   char         info[LOG_BUFFER];
   int          success;
-
-  if (fts(fpath, &str)) {
-    LOG_msg("Could not convert shader to string\n");
-    return -1;
-  }
 
   s = glCreateShader(type);
   glShaderSource(s, 1, &str, NULL);
@@ -60,15 +55,16 @@ static unsigned int compile_shader(const char *fpath, GLenum type)
   if (!success) {
     glGetShaderInfoLog(s, LOG_BUFFER, NULL, info);
     LOG_msg("Error compiling shader: %s\n", info);
-    free(str);
     return 0;
   }
 
-  free(str);
   return s;
 }
 
-unsigned int GL_shader_create(const char *vpath, const char *fpath)
+/**
+ * GL_shader_create_str
+ */
+unsigned int GL_shader_create_str(const char *v, const char *f)
 {
   unsigned int vs;
   unsigned int fs;
@@ -76,11 +72,11 @@ unsigned int GL_shader_create(const char *vpath, const char *fpath)
   int          success;
   char         info[LOG_BUFFER];
 
-  if (!(vs = compile_shader(vpath, GL_VERTEX_SHADER))) {
+  if (!(vs = compile_shader(v, GL_VERTEX_SHADER))) {
     return 0;
   }
 
-  if (!(fs = compile_shader(fpath, GL_FRAGMENT_SHADER))) {
+  if (!(fs = compile_shader(f, GL_FRAGMENT_SHADER))) {
     return 0;
   }
 
@@ -98,6 +94,30 @@ unsigned int GL_shader_create(const char *vpath, const char *fpath)
 
   glDeleteShader(vs);
   glDeleteShader(fs);
+
+  return s;
+}
+
+unsigned int GL_shader_create(const char *vpath, const char *fpath)
+{
+  char        *vstr;
+  char        *fstr;
+  unsigned int s;
+
+  if (!(vstr = fts(vpath))) {
+    LOG_msg("Could not convert vertex shader to string\n");
+    return 0;
+  }
+
+  if (!(fstr = fts(fpath))) {
+    LOG_msg("Could not convert fragmemt shader to string\n");
+    return 0;
+  }
+
+  s = GL_shader_create_str(vstr, fstr);
+
+  free(vstr);
+  free(fstr);
 
   return s;
 }

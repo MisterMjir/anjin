@@ -3,7 +3,7 @@
 #include "gl/gl_util.h"
 #include "core/core.h"
 #include "gfx/gfx.h"
-#include "game.h"
+#include "space_catet.h"
 #include "snd/snd.h"
 
 static unsigned int txt;
@@ -34,10 +34,10 @@ void lose_init(void)
   CORE_foo.draw_fn = lose_draw;
   CORE_foo.quit_fn = lose_quit;
 
-  txt = GL_texture_create("res/img/lose.png");
+  txt = GL_texture_create("res/space_catet/lose.png");
 
   GFX_projection(0, 640, 480, 0, -1, 1);
 
-  SND_bgm_set("res/music/lose.wav");
+  SND_bgm_set("res/space_catet/lose.wav");
   SND_bgm_play();
 }
