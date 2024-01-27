@@ -52,6 +52,7 @@ int GL_gll(void);
   GLFN(void,            glUniform1f,               GLint, GLfloat) \
   GLFN(void,            glUniform2f,               GLint, GLfloat, GLfloat) \
   GLFN(void,            glUniform3f,               GLint, GLfloat, GLfloat, GLfloat) \
+  GLFN(void,            glUniform4f,               GLint, GLfloat, GLfloat, GLfloat, GLfloat) \
   GLFN(void,            glUniformMatrix4fv,        GLint, GLsizei, GLboolean, const GLfloat *) \
   GLFN(GLboolean,       glUnmapBuffer,             GLenum) \
   GLFN(void,            glUseProgram,              GLuint) \

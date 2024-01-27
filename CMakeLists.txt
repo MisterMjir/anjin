@@ -16,6 +16,13 @@ set(SPACE_CATET
   ${CMAKE_CURRENT_LIST_DIR}/src/game/space_catet/win.c
 )
 
+set(CATFORMER
+  ${CMAKE_CURRENT_LIST_DIR}/src/game/catformer/level.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/game/catformer/title.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/game/catformer/lose.c
+  ${CMAKE_CURRENT_LIST_DIR}/src/game/catformer/win.c
+)
+
 set(MODULE_CORE
   ${CMAKE_CURRENT_LIST_DIR}/src/core/core.c
   ${CMAKE_CURRENT_LIST_DIR}/src/core/input/input.c
@@ -57,7 +64,7 @@ set(MODULE_TXT
 
 add_executable(anjin
   ${DEMOS}
-  ${SPACE_CATET}
+  ${CATFORMER}
 
   ${CMAKE_CURRENT_LIST_DIR}/src/driver.c
   ${MODULE_CORE}

@@ -33,6 +33,8 @@ int GL_set(struct CORE_window *w)
   w->gl_ctx = emscripten_webgl_create_context("#ANJIN_WINDOW", &attribs);
 
   emscripten_webgl_make_context_current(w->gl_ctx);
+
+  return 0;
 }
 
 void GL_unset(struct CORE_window *w)

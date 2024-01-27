@@ -1,13 +1,15 @@
 #include "core/core.h"
 #include "snd/snd.h"
 #include "game/demos/demos.h"
-#include "game/space_catet/space_catet.h"
+//#include "game/space_catet/space_catet.h"
+#include "game/catformer/catformer.h"
 
 #define WIN_W 640
 #define WIN_H 480
 #define FPS 60
-//#define FIRST_INIT title_init
-#define FIRST_INIT demo3_init
+#define FIRST_INIT title_init
+//#define FIRST_INIT demo2_init
+//#define FIRST_INIT level_init
 
 #ifndef __EMSCRIPTEN__
 

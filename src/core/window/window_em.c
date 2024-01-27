@@ -17,7 +17,9 @@ struct CORE_window * CORE_window_create(int w, int h)
   struct CORE_window *win;
 
   EM_ASM(
-    var window = document.createElement('canvas');
+    let loading = document.getElementById("loading");
+    document.body.removeChild(loading);
+    let window = document.createElement('canvas');
     window.id = 'ANJIN_WINDOW';
     window.style.backgroundColor = '#000';
     document.body.appendChild(window);

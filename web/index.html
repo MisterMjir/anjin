@@ -2,6 +2,7 @@
 <html>
 <head>
   <title>anjin webapp</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="coi-serviceworker.min.js"></script>
   <!--<script src="https://greggman.github.io/webgl-lint/webgl-lint.js" crossorigin></script>-->
   <style>
@@ -56,6 +57,54 @@
       box-shadow: 0 9px 27px rgba(0,0,0,.3);
       border-radius: 8px;
     }
+
+    #loading {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #loading > div {
+      display: flex;
+    }
+
+    #loading > div > span {
+      display: block;
+      height: 16px;
+      width: 16px;
+      border-radius: 50%;
+      background-color: #2f2f40;
+      position: relative;
+      bottom: 0;
+    }
+
+    @keyframes loading {
+       0% { bottom: 0; }
+       5% { bottom: -4px; }
+      15% { bottom: 32px; }
+      20% { bottom: -8px; }
+      25% { bottom: 4px; }
+      30% { bottom: -3px; }
+      35% { bottom: 2px; }
+      40% { bottom: -1px; }
+      45% { bottom: 1px; }
+      50% { bottom: -1px; }
+      55% { bottom: 0; }
+    }
+
+    #loading > div > span:nth-child(1) {
+      animation: 5s ease-in 0s infinite loading;
+    }
+
+    #loading > div > span:nth-child(2) {
+      margin: 0 32px;
+      animation: 5s ease-in 1.5s infinite loading;
+    }
+
+    #loading > div > span:nth-child(3) {
+      animation: 5s ease-in 3s infinite loading;
+    }
   </style>
 </head>
 <body>
@@ -65,12 +114,17 @@
   <script type="text/javascript">
     function wasm_time() {
       //console.log("I wasm'ed");
-      document.body.innerHTML = "";
-      
-      let scriptEle = document.createElement("script");
-      scriptEle.setAttribute("src", "anjin.js");
-      scriptEle.setAttribute("type", "text/javascript");
-      document.body.appendChild(scriptEle);
+      if (typeof SharedArrayBuffer !== 'undefined') {
+        document.body.innerHTML = "<div id='loading'><div><span></span><span></span><span></span></div><p>Loading</p></div>";
+        
+        let scriptEle = document.createElement("script");
+        scriptEle.setAttribute("src", "anjin.js");
+        scriptEle.setAttribute("type", "text/javascript");
+        document.body.appendChild(scriptEle);
+      }
+      else {
+        document.body.innerHTML = "<div><p>Woah, something's whack! Refreshing the page might fix this.</p></div>";
+      }
     }
   </script>
 </body>

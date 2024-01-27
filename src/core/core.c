@@ -23,7 +23,7 @@ static int init(void)
   GL_set(CORE_wnd); /* Context must be set in the thread its used in */
 
   GFX_init();
-  TXT_init();
+  //TXT_init();
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
